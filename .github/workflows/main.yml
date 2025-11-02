@@ -2,44 +2,36 @@
 
 name: CI Pipeline
 
-# 1. Define your trigger
-# This pipeline runs on every 'push' to the 'main' branch
-# and on any 'pull_request' targeting the 'main' branch.
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
-# 2. Define the jobs
 jobs:
-  # This workflow contains a single job called "build-and-test"
   build-and-test:
-    # 3. Specify the runner (the virtual machine to run on)
     runs-on: ubuntu-latest
 
-    # 4. List the steps to run
+    # Add this 'defaults' block
+    defaults:
+      run:
+        working-directory: ./your-subdirectory-name # <-- SET THE DEFAULT HERE
+
     steps:
-      # 'uses' runs a pre-built GitHub Action
-      # This step checks out your repository's code
       - name: Check out code
         uses: actions/checkout@v4
 
-      # This step sets up Node.js. Change this for your language (e.g., setup-python)
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Specify your Node.js version
+          node-version: '20'
 
-      # 'run' executes shell commands
-      # This step installs your project's dependencies
+      # These steps will now automatically run in the correct folder
       - name: Install dependencies
         run: npm install
 
-      # This step runs your tests
       - name: Run tests
         run: npm test
 
-      # This step runs your build script (common for React, Vue, etc.)
       - name: Build project
         run: npm run build
